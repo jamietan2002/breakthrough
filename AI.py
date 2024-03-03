@@ -3,6 +3,9 @@ import time
 import copy
 import signal
 
+import utils
+import time
+import signal
 class PlayerAI:
     def __init__(self):
         self.mintbl= {}
@@ -16,7 +19,6 @@ class PlayerAI:
         Your function should implement a minimax algorithm with 
         alpha beta pruning to select the appropriate move based 
         on the input board state. Play for black.
-
         Parameters
         ----------
         self: object instance itself, passed in automatically by Python
@@ -37,7 +39,6 @@ class PlayerAI:
             raise TimeoutError
         signal.signal(signal.SIGALRM, signal_handler)
         signal.setitimer(signal.ITIMER_REAL, 2.99)
-
         a = float('-inf')
         b = float('inf')
         max_v = -10000
@@ -45,25 +46,23 @@ class PlayerAI:
         tpl = self.successors(board, "B")
         new_states = tpl[0]
         actions = tpl[1]
-        depth = 3
-        while True:
+        for i in range(len(new_states)):
             try:
-                for i in range(len(new_states)):
-                    v = self.min_value(new_states[i], depth, a, b)
-                    if v > max_v:
-                        max_v = v
-                        best_action= actions[i]
-                    a = max(a, v)
-                depth+=1
+                v = self.min_value(new_states[i], 1, a, b)
+                if v > max_v:
+                    max_v = v
+                    best_action= actions[i]
+                a = max(a, v)
             except TimeoutError:
+                print("urmom")
                 return best_action
-
+        return best_action 
     def max_value(self,board, total_time, a, b):
         
         board_str = str(board)
         if board_str in self.maxtbl:
             return self.maxtbl[board_str]
-        if utils.is_game_over(board) or total_time == 0:
+        if utils.is_game_over(board) or total_time > 3:
             return self.utility(board)
         v = -1000000
         for new_state in self.successors(board, "B")[0]:
@@ -80,7 +79,7 @@ class PlayerAI:
         board_str = str(board)
         if board_str in self.mintbl:
             return self.mintbl[board_str]
-        if utils.is_game_over(board) or total_time == 0:
+        if utils.is_game_over(board) or total_time > 3:
             return self.utility(board)
         v = 1000000
         for new_state in self.successors(board, "W")[0]:
@@ -90,7 +89,6 @@ class PlayerAI:
                 break
         self.mintbl[board_str] = v   
         return v 
-
     def utility(self, board):
         #minimize total distance 
         #depth 3, 21 moves, Black(Student agent) win; Random move made by Black(Student agent): 0;
@@ -102,7 +100,6 @@ class PlayerAI:
         #         if board[i][j] == 'W':
         #             val -= (utils.ROW - i)
         # return val
-
         #give weights 
         val = 0
         for i in range(len(board)):
@@ -125,7 +122,6 @@ class PlayerAI:
         #          if board[i][j] == 'B':
         #              sum += i**2
         # return sum
-
         #depth 4, 41 moves, Black(Student agent) win; Random move made by Black(Student agent): 6;
         wcount, bcount = 0, 0
         for i in range(utils.ROW):
@@ -135,7 +131,6 @@ class PlayerAI:
                 elif board[i][j] == 'W':
                     wcount+=1
         return bcount-wcount
-
         #wtf white wins??
         # minimize total vertical distance of all blacks from goal row 
         # d = 0
@@ -144,7 +139,6 @@ class PlayerAI:
         #         if board[i][j] == 'B':
         #             d += utils.ROW - i
         # return 1/d
-
         #depth 4, 55 moves, Black(Student agent) win; Random move made by Black(Student agent): 4;
         minimum = 100
         for i in range(utils.ROW):
@@ -152,10 +146,8 @@ class PlayerAI:
                  if board[i][j] == 'B':
                      minimum = min(utils.ROW - i, minimum)
         return 1/minimum
-
         
         
-
     def successors(self, board, turn):
         
         new_states = []
@@ -179,7 +171,6 @@ class PlayerAI:
                 if board[r][c] == 'B':
                     if utils.is_valid_move(board, src, dst): #move forward
                         add_state(src, dst)
-
                     dst = [r+1, c+1]
                     if utils.is_valid_move(board, src, dst): #move diagonal left
                         add_state(src, dst)
@@ -188,7 +179,7 @@ class PlayerAI:
                         add_state(src, dst)
        
         return new_states, actions
-
+    
 class PlayerNaive:
     ''' A naive agent that will always return the first available valid move '''
     def make_move(self, board):
