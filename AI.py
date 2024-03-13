@@ -35,8 +35,8 @@ class PlayerAI:
         ################
         def signal_handler(signum, frame):
             raise TimeoutError
-        signal.signal(signal.SIGALRM, signal_handler)
-        signal.setitimer(signal.ITIMER_REAL, 2.99)
+        #signal.signal(signal.SIGALRM, signal_handler)
+        #signal.setitimer(signal.ITIMER_REAL, 2.99)
 
         a = float('-inf')
         b = float('inf')
@@ -52,8 +52,10 @@ class PlayerAI:
                     v = self.min_value(new_states[i], depth, a, b)
                     if v > max_v:
                         max_v = v
-                        best_action= actions[i]
+                        best_action = actions[i]
                     a = max(a, v)
+                #print("B: ", best_action) #print for visualization
+                return best_action  #TODO without a timer, this needs to be here
                 depth+=1
             except TimeoutError:
                 return best_action
@@ -67,7 +69,7 @@ class PlayerAI:
             return self.utility(board)
         v = -1000000
         for new_state in self.successors(board, "B")[0]:
-            v = max(v, self.min_value(new_state, total_time+1, a, b))
+            v = max(v, self.min_value(new_state, total_time-1, a, b))
             a = max(v, a)
             if v >= b:
                 break
@@ -84,7 +86,7 @@ class PlayerAI:
             return self.utility(board)
         v = 1000000
         for new_state in self.successors(board, "W")[0]:
-            v = min(v, self.max_value(new_state, total_time+1, a, b))
+            v = min(v, self.max_value(new_state, total_time-1, a, b))
             b = min(b, v)
             if v <= a:
                 break
@@ -192,7 +194,9 @@ class PlayerAI:
 class PlayerNaive:
     ''' A naive agent that will always return the first available valid move '''
     def make_move(self, board):
-        return utils.generate_rand_move(board)
+        move = utils.generate_rand_move(board)
+        #print("W: ", move) #print for visualization
+        return move
 
 
 ##########################

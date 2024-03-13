@@ -298,8 +298,14 @@ def play_windows(playerAI_A, playerAI_B, board):
         if colour == WHITE:
             invert_board(board)
         move += 1
-    
+
+    print_board(board) #Shows the final gameboard
     return f"{colour} win; Random move made by {BLACK}: {random_moves};"
+
+
+def print_board(board):
+    for row in board:
+        print(row)
 
 # decorator for first three public test cases
 def wrap_test(func):
