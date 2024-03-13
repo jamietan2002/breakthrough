@@ -55,7 +55,7 @@ class PlayerAI:
                         best_action = actions[i]
                     a = max(a, v)
                 #print("B: ", best_action) #print for visualization
-                return best_action  #TODO without a timer, this needs to be here
+                return best_action  #Without a timer, this needs to be here. TODO Consider adding a toggle for timer
                 depth+=1
             except TimeoutError:
                 return best_action
