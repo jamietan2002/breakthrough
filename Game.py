@@ -4,11 +4,11 @@ import Player
 
 # generates initial state
 def generate_new_board(size):
+    empty_row = ['_'] * size
     board = [
-        ['B']*size, ['B']*size,  # 2 black rows
-        ['_']*size, ['_']*size,  # 2 empty rows
-        # ['_']*size, ['_']*size,    # 2 more empty rows # TODO Make size adjustable
-        ['W']*size, ['W']*size,  # 2 white rows
+        ['B'] * size, ['B'] * size,  # 2 Black rows
+        *([empty_row] * (size // 2)),       # size/2 Empty row
+        ['W'] * size, ['W'] * size  # 2 White rows
     ]
     return board
 
@@ -38,13 +38,39 @@ def print_board(board):
     print(horizontal_rule)
 
 
-def print_board2(board):
+def print_large_board(board):    # Made mostly by chatGPT
     """Prints the board"""
-    horizontal_rule = '+' + ('-'*3 + '+') * len(board)
+    # Define row and column labels
+    row_labels = [n for n in range(1, len(board)+1)]
+    col_labels = [chr(_) for _ in range(97, 97+len(board))]
+
+    # Print column labels
+    col_label_row = '    ' + '     '.join(col_labels) + '     '
+    print(col_label_row)
+
+    # Print top horizontal rule
+    print('  +' + '-----+' * len(board))
+
+    # Iterate over rows of the board
     for i in range(len(board)):
-        print(horizontal_rule)
-        print('| ' + ' | '.join(' ' if board[i][j] == '_' else board[i][j] for j in range(len(board))) + ' |')
-    print(horizontal_rule)
+        # Print row label and start of row
+        print(str(row_labels[i]) + ' |', end=' ')
+
+        # Print contents of the row
+        for j in range(len(board[i])):
+            if board[i][j] == '_':
+                print('    |', end=' ')
+            else:
+                print(f' {board[i][j]}  |', end=' ')
+
+        # Print end of row and row label
+        print(row_labels[i])
+
+        # Print horizontal rule between rows
+        print('  +' + '-----+' * len(board))
+
+    # Print column labels at the bottom
+    print(col_label_row)
 
 
 # checks if a move made for black is valid or not. Move source: from_ [row, col], move destination: to_ [row, col]
@@ -137,7 +163,7 @@ def play(player1, player2, board):
     # Winner found
     print(f"The game concluded in {move} moves")
     print_board(board)  # Shows the final game board
-    print_board2(board)
+    #print_board2(board)
     return f"{colour} wins with {player.get_random_moves()} random moves"
 
 
