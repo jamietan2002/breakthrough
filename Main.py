@@ -1,16 +1,18 @@
 import Game
 import Minimax
+import Player
 
 
 def main():
     # Create board and players
-    board = Game.generate_new_board()
-    # player = Player()
+    board = Game.generate_new_board(size=8)
     minimax = Minimax.Minimax(depth=4, timeout=120)
+    player = Player.Player()
     # Start the game
-    result = Game.play(Game.Naive(), Game.Naive(), board)
+    result = Game.play(player, Game.Naive(), board)
     print(result)
 
 
 if __name__ == "__main__":
     main()
+

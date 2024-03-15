@@ -1,14 +1,13 @@
 import copy
-
-size = 8
+import Player
 
 
 # generates initial state
-def generate_new_board():
+def generate_new_board(size):
     board = [
         ['B']*size, ['B']*size,  # 2 black rows
         ['_']*size, ['_']*size,  # 2 empty rows
-        ['_']*size, ['_']*size,    # 2 more empty rows # TODO size 8
+        # ['_']*size, ['_']*size,    # 2 more empty rows # TODO size 8
         ['W']*size, ['W']*size,  # 2 white rows
     ]
     return board
@@ -32,10 +31,19 @@ def invert_board(curr_board, in_place=True):
 
 def print_board(board):
     """Prints the board"""
-    horizontal_rule = '+' + ('-'*5 + '+') * size
+    horizontal_rule = '+' + ('-' * 5 + '+') * len(board)
     for i in range(len(board)):
         print(horizontal_rule)
-        print('|  ' + '  |  '.join(' ' if board[i][j] == '_' else board[i][j] for j in range(size)) + '  |')
+        print('|  ' + '  |  '.join(' ' if board[i][j] == '_' else board[i][j] for j in range(len(board))) + '  |')
+    print(horizontal_rule)
+
+
+def print_board2(board):
+    """Prints the board"""
+    horizontal_rule = '+' + ('-'*3 + '+') * len(board)
+    for i in range(len(board)):
+        print(horizontal_rule)
+        print('| ' + ' | '.join(' ' if board[i][j] == '_' else board[i][j] for j in range(len(board))) + ' |')
     print(horizontal_rule)
 
 
@@ -45,7 +53,7 @@ def is_valid_move(board, from_, to_):
         return False
     if board[from_[0]][from_[1]] != 'B':  # if move not made for black
         return False
-    elif (to_[0] < 0 or to_[0] >= size) or (to_[1] < 0 or to_[1] >= size):  # if move takes pawn outside the board
+    elif (to_[0] < 0 or to_[0] >= len(board)) or (to_[1] < 0 or to_[1] >= len(board)):  # if move takes pawn outside the board
         return False
     elif to_[0] != (from_[0]+1):  # if move takes more than one step forward
         return False
@@ -74,15 +82,15 @@ def state_change(curr_board, from_, to_, in_place=True):
 def is_game_over(board):
     """Returns True if game is over"""
     if any(  # If a piece has reached the opposite end of the board
-        board[size - 1][i] == 'B' or
+        board[len(board) - 1][i] == 'B' or
         board[0][i] == 'W'
-        for i in range(size)
+        for i in range(len(board))
     ):
         return True
 
     w_count, b_count = 0, 0  # If a player has run out of pieces
-    for i in range(size):
-        for j in range(size):
+    for i in range(len(board)):
+        for j in range(len(board)):
             if board[i][j] == 'B':
                 b_count += 1
             elif board[i][j] == 'W':
@@ -103,16 +111,21 @@ def play(player1, player2, board):
     while not is_game_over(board):
         player = players[move % 2]
         colour = colours[move % 2]
-        if colour == WHITE:
-            invert_board(board)
-        src, dst = player.get_move(board)
+
+        if isinstance(player, Player.Player):
+            src, dst = player.get_move(board, colour)
+        else:
+            if colour == WHITE:
+                invert_board(board)
+            src, dst = player.get_move(board)
+
         if not is_valid_move(board, src, dst):
             src, dst = generate_random_move(board)
             if is_valid_move(board, src, dst):
-                print(f"{colour} returned returned invalid or no move. Making random move...")
+                print(f"{colour} returned invalid or no move. Making random move...")
             else:
                 return f"{colour} has no possible moves"
-        state_change(board, src, dst)  # makes the move on the board
+        state_change(board, src, dst)  # make the move on the board
         if colour == WHITE:
             invert_board(board)
         move += 1
@@ -124,6 +137,7 @@ def play(player1, player2, board):
     # Winner found
     print(f"The game concluded in {move} moves")
     print_board(board)  # Shows the final game board
+    print_board2(board)
     return f"{colour} wins with {player.get_random_moves()} random moves"
 
 
