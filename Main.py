@@ -10,7 +10,7 @@ def main():
     player = Player.Player()
 
     # Start the game
-    result = Game.play(player, Game.Naive(), board)  # Available players: player, minimax, Game.Naive
+    result = Game.play(player, minimax, board)  # Available players: player, minimax, Game.Naive
     print(result)
 
 
