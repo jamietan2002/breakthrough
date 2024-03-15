@@ -7,7 +7,7 @@ def generate_new_board(size):
     board = [
         ['B']*size, ['B']*size,  # 2 black rows
         ['_']*size, ['_']*size,  # 2 empty rows
-        # ['_']*size, ['_']*size,    # 2 more empty rows # TODO size 8
+        # ['_']*size, ['_']*size,    # 2 more empty rows # TODO Make size adjustable
         ['W']*size, ['W']*size,  # 2 white rows
     ]
     return board
