@@ -122,11 +122,11 @@ class Minimax:
                 if board[i][j] == 'B':
                     val += i
                     # higher weight to inner columns
-                    if j > 0 or j < Game.size - 1:
+                    if j > 0 or j < len(board) - 1:
                         val += 1
                 if board[i][j] == 'W':
-                    val -= (Game.size - i)
-                    if j > 0 or j < Game.size - 1:
+                    val -= (len(board) - i)
+                    if j > 0 or j < len(board) - 1:
                         val -= 2
         return val
 
