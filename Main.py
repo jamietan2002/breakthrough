@@ -6,7 +6,7 @@ import Player
 def main():
     # Create board and players
     board = Game.generate_new_board(size=8)
-    minimax = Minimax.Minimax(depth=4, timeout=120)
+    minimax = Minimax.Minimax(depth=3, timeout=120)
     player = Player.Player()
 
     # Start the game
