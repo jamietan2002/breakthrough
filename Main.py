@@ -5,12 +5,15 @@ import Player
 
 def main():
     # Create board and players
-    board = Game.generate_new_board(size=8)
-    minimax = Minimax.Minimax(depth=3, timeout=120)
+    board = Game.generate_new_board(size=6)
+    minimax = Minimax.Minimax(depth=3, timeout=5)
+    minimax2 = Minimax.Minimax(depth=3, timeout=5)
     player = Player.Player()
 
     # Start the game
-    result = Game.play(player, minimax, board)  # Available players: player, minimax, Game.Naive
+    # Available players: player, minimax, Game.Naive
+    # The player must always be the first parameter. Two AI can still play against each other.
+    result = Game.play(player, minimax, board)
     print(result)
 
 
