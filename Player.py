@@ -40,7 +40,7 @@ class Player:
             else:
                 print("Invalid input. Try again.")
 
-    def get_random_move(self):
+    def get_random_moves(self):
         return 0
 
     if __name__ == '__main__':

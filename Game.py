@@ -7,7 +7,7 @@ def generate_new_board(size):
     empty_row = ['_'] * size
     board = [
         ['B'] * size, ['B'] * size,  # 2 Black rows
-        *([empty_row] * (size // 2)),       # size/2 Empty row
+        *[empty_row[:] for _ in range(size-4)],  # size-4 unique Empty rows
         ['W'] * size, ['W'] * size  # 2 White rows
     ]
     return board
@@ -93,15 +93,13 @@ def is_valid_move(board, from_, to_):
         return True
 
 
-def state_change(curr_board, from_, to_, in_place=True):
+def state_change(curr_board, src, dst):
     """ Updates the board configuration by modifying existing values if in_place is set to True,
     or creating a new board with updated values if in_place is set to False"""
-    board = curr_board
-    if not in_place:
-        board = copy.deepcopy(curr_board)
-    if is_valid_move(board, from_, to_):
-        board[from_[0]][from_[1]] = '_'
-        board[to_[0]][to_[1]] = 'B'
+    board = copy.deepcopy(curr_board)
+    if is_valid_move(board, src, dst):
+        board[src[0]][src[1]] = '_'
+        board[dst[0]][dst[1]] = 'B'
     return board
 
 
@@ -151,7 +149,7 @@ def play(player1, player2, board):
                 print(f"{colour} returned invalid or no move. Making random move...")
             else:
                 return f"{colour} has no possible moves"
-        state_change(board, src, dst)  # make the move on the board
+        board = state_change(board, src, dst)  # make the move on the board
         if colour == WHITE:
             invert_board(board)
         move += 1
@@ -185,6 +183,13 @@ def generate_random_move(board):
                 if is_valid_move(board, from_, to_):
                     return from_, to_
     return None
+
+
+if __name__ == "__main__":
+    board = generate_new_board(8)
+    src = [1, 0]
+    dst = [2, 0]
+    board = state_change(board, src, dst)
 
 
 class Naive:

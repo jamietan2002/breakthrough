@@ -121,6 +121,8 @@ class Minimax:
             for j in range(len(board[i])):
                 if board[i][j] == 'B':
                     val += i
+                    if i == len(board) - 1:
+                        val += 1000  # If the move will win the game
                     # higher weight to inner columns
                     if j > 0 or j < len(board) - 1:
                         val += 1
